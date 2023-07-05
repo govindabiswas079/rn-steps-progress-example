@@ -1,79 +1,177 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+![](https://img.shields.io/npm/v/rn-steps-progress.svg?style=flat)
+![](https://img.shields.io/npm/dt/rn-steps-progress.svg)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)]
 
-# Getting Started
+# rn-steps-progress
 
->**Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
+React Native customizable component for implements a progress stepper UI. 
+* Each steps content is displayed inside of a customizable ScrollView. 
+* customizable buttons are displayed at the bottom of the component to move between steps.
 
-## Step 1: Start the Metro Server
+## Installation
 
-First, you will need to start **Metro**, the JavaScript _bundler_ that ships _with_ React Native.
+If using yarn:
 
-To start Metro, run the following command from the _root_ of your React Native project:
-
-```bash
-# using npm
-npm start
-
-# OR using Yarn
-yarn start
+```
+yarn add rn-steps-progress
 ```
 
-## Step 2: Start your Application
+If using npm:
 
-Let Metro Bundler run in its _own_ terminal. Open a _new_ terminal from the _root_ of your React Native project. Run the following command to start your _Android_ or _iOS_ app:
-
-### For Android
-
-```bash
-# using npm
-npm run android
-
-# OR using Yarn
-yarn android
+```
+npm i rn-steps-progress
 ```
 
-### For iOS
+## Usage
 
-```bash
-# using npm
-npm run ios
-
-# OR using Yarn
-yarn ios
+```
+import { ProgressSteps, ProgressStep } from 'rn-steps-progress';
 ```
 
-If everything is set up _correctly_, you should see your new app running in your _Android Emulator_ or _iOS Simulator_ shortly provided you have set up your emulator/simulator correctly.
+Simply place a `<ProgressStep />` tag for each desired step within the `<ProgressSteps />` wrapper.
 
-This is one way to run your app — you can also run it directly from within Android Studio and Xcode respectively.
+```
+<View style={{flex: 1}}>
+    <ProgressSteps>
+        <ProgressStep label="First Step">
+            <View style={{ alignItems: 'center' }}>
+                <Text>This is the content within step 1!</Text>
+            </View>
+        </ProgressStep>
+        <ProgressStep label="Second Step">
+            <View style={{ alignItems: 'center' }}>
+                <Text>This is the content within step 2!</Text>
+            </View>
+        </ProgressStep>
+        <ProgressStep label="Third Step">
+            <View style={{ alignItems: 'center' }}>
+                <Text>This is the content within step 3!</Text>
+            </View>
+        </ProgressStep>
+    </ProgressSteps>
+</View>
+```
 
-## Step 3: Modifying your App
+### Button Styling Usage
+Button container and text are fully customizable using the `nextBtnStyle, nextBtnTextStyle, previousBtnStyle, and previousBtnTextStyle` props.
 
-Now that you have successfully run the app, let's modify it.
+Example usage to change a buttons text color: 
 
-1. Open `App.tsx` in your text editor of choice and edit some lines.
-2. For **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Developer Menu** (<kbd>Ctrl</kbd> + <kbd>M</kbd> (on Window and Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (on macOS)) to see your changes!
+```
+const buttonTextStyle = {
+    color: '#393939'
+};
 
-   For **iOS**: Hit <kbd>Cmd ⌘</kbd> + <kbd>R</kbd> in your iOS Simulator to reload the app and see your changes!
+return (
+    <View style={{flex: 1}}>
+        <ProgressSteps>
+            <ProgressStep label="First Step" nextBtnTextStyle={buttonTextStyle} previousBtnTextStyle={buttonTextStyle}>
+                <View style={{ alignItems: 'center' }}>
+                    <Text>This is the content within step 1!</Text>
+                </View>
+            </ProgressStep>
+            <ProgressStep label="Second Step" nextBtnTextStyle={buttonTextStyle} previousBtnTextStyle={buttonTextStyle}>
+                <View style={{ alignItems: 'center' }}>
+                    <Text>This is the content within step 2!</Text>
+                </View>
+            </ProgressStep>
+        </ProgressSteps>
+    </View>
+)
+```
 
-## Congratulations! :tada:
+### Current Step Error and Validation Handling
+The `errors` prop should be used if there's a need for validation and error handling when clicking the next button. If you would like to prevent the next step from being rendered, set the `errors` prop to `true`. By default, it will be `false`.
 
-You've successfully run and modified your React Native App. :partying_face:
+Example usage of validation check:
 
-### Now what?
+```
+state = {
+    isValid: false,
+    errors: false
+};
 
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [Introduction to React Native](https://reactnative.dev/docs/getting-started).
+onNextStep = () => {
+    if (!this.state.isValid) {
+      this.setState({ errors: true });
+    } else {
+      this.setState({ errors: false });
+    }
+};
 
-# Troubleshooting
+render() {
+    return (
+      <View style={{ flex: 1 }}>
+        <ProgressSteps>
+          <ProgressStep label="First Step" onNext={this.onNextStep} errors={this.state.errors}>
+            <View style={{ alignItems: 'center' }}>
+              <Text>This is the content within step 1!</Text>
+            </View>
+          </ProgressStep>
+          <ProgressStep label="Second Step">
+            <View style={{ alignItems: 'center' }}>
+              <Text>This is the content within step 2!</Text>
+            </View>
+          </ProgressStep>
+        </ProgressSteps>
+      </View>
+    );
+}
 
-If you can't get this to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
+```
 
-# Learn More
+## Documentation
 
-To learn more about React Native, take a look at the following resources:
+### Progress Steps Component
+| Name                      | Description                              | Default     | Type    |
+|---------------------------|------------------------------------------|-------------|---------|
+| borderWidth               | Width of the progress bar between steps  | 6           | Number  |
+| borderStyle               | Type of border for the progress bar      | solid       | String  |
+| activeStepIconBorderColor | Outside border color for the active step | #4bb543     | String  |
+| progressBarColor          | Color of the default progress bar        | #ebebe4     | String  |
+| completedProgressBarColor | Color of the completed progress bar      | #4bb543     | String  |
+| activeStepIconColor       | Color of the active step icon            | transparent | String  |
+| completedStepIconColor    | Color of the completed step icon         | #4bb543     | String  |
+| disabledStepIconColor     | Color of the disabled step icon          | #ebebe4     | String  |
+| labelFontFamily           | Font family for the step icon label      | iOS/Android default font | String |
+| labelColor                | Color of the default label               | lightgray   | String  |
+| labelFontSize             | Font size for the step icon label        | 14          | Number  |
+| activeLabelColor          | Color of the active label                | #4bb543     | String  |
+| activeLabelFontSize       | Optional font size for the active step icon label      | null     | Number  |
+| completedLabelColor       | Color of the completed label             | lightgray   | String  |
+| activeStepNumColor        | Color of the active step number          | black       | String  |
+| completedStepNumColor     | Color of the completed step number       | black       | String  |
+| disabledStepNumColor      | Color of the disabled step number        | white       | String  |
+| completedCheckColor       | Color of the completed step checkmark    | white       | String  |
+| activeStep                | Manually specify the active step         | 0           | Number  |
+| isComplete                | Set all Steps to active state            | false       | Boolean |
+| topOffset                 | Set progress bar top offset              | 30          | Number  |
+| marginBottom              | Set progress bar bottom margin           | 50          | Number  |
 
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+### Progress Step Component
+| Name | Description | Default | Type |
+|------------------|--------------------------------------------------------------------------|----------|---------|
+| label | Title of the current step to be displayed | null | String |
+| onNext | Function called when the next step button is pressed | null | Func |
+| onPrevious | Function called when the previous step button is pressed | null | Func |
+| onSubmit | Function called when the submit step button is pressed | null | Func |
+| nextBtnText | Text to display inside the next button | Next | String |
+| previousBtnText | Text to display inside the previous button | Previous | String |
+| finishBtnText | Text to display inside the button on the last step | Submit | String |
+| nextBtnStyle | Style object to provide to the next/finish buttons | { textAlign: 'center', padding: 8 } | Object |
+| nextBtnTextStyle | Style object to provide to the next/finish button text | { color: '#007aff', fontSize: 18 } | Object |
+| nextBtnDisabled | Value to disable/enable next button | false | Boolean |
+| previousBtnStyle | Style object to provide to the previous button | { textAlign: 'center', padding: 8 } | Object |
+| previousBtnTextStyle | Style object to provide to the previous button text | { color: '#007aff', fontSize: 18 } | Object |
+| previousBtnDisabled | Value to disable/enable previous button | false | Boolean |
+| scrollViewProps | Object to provide props to ScrollView component | {} | Object |
+| scrollable | The content of the Progress Step should be scrollable | true | Boolean |
+| viewProps | Object to provide props to view component if scrollable is false | {} | Object |
+| errors | Used to assist with current step validation. If true, the next step won't be rendered | false | Boolean |
+| removeBtnRow | Used to render the progress step without the button row | false | Boolean |
+
+## Contributing
+Pull requests are always welcome! Feel free to open a new GitHub issue for any changes that can be made.
+
+## Author
+Govinda Biswas | React & React-Native Developer
